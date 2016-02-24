@@ -1,0 +1,61 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/simple"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/simple"/>
+        
+    <item
+        android:id="@+id/check_in"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/check_in"/>
+
+        <item
+        android:id="@+id/body_scan"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:visible="false"
+        android:title="@string/body_scan"/>
+    
+            <item
+        android:id="@+id/expanding"
+        android:orderInCategory="100"
+        android:visible="false"
+        android:showAsAction="never"
+        android:title="@string/expanding"/>
+        
+    <item
+        android:id="@+id/threemin"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/threemin"/>
+    
+    <item
+        android:id="@+id/where_is_it"
+        android:orderInCategory="100"
+        android:visible="false"
+        android:showAsAction="never"
+        android:title="@string/where_is_it"/>
+
+        <item
+        android:id="@+id/zen"
+        android:orderInCategory="100"
+        android:visible="true"
+        android:showAsAction="never"
+        android:title="@string/zen"/>
+    
+    <item
+        android:id="@+id/anapana"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/anapana"/>
+    
+    <item
+        android:id="@+id/about"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/about"/>
+
+</menu>

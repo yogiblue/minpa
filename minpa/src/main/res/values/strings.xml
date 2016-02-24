@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">minpa</string>
+    <string name="simple">What is it?</string>
+    <string name="choose">Choose</string>
+    <string name="check_in">Check in</string>
+    <string name="body_scan">Body scan</string>
+    <string name="expanding">Expanding</string>
+    <string name="threemin">3 mins</string>
+    <string name="where_is_it">Where is it?</string>
+    <string name="zen">Zen</string>
+    <string name="anapana">Anapanasati</string>
+    <string name="about">About</string>
+    <string name="hello_world"><b>How are you today?</b></string>
+
+    <string-array name="vedana">
+        <item>tight</item>
+        <item>relaxed</item>
+        <item>positive</item>
+        <item>negative</item>
+        <item>neutral</item>
+        <item>OK</item>
+        <item>good</item>
+        <item>bad</item>
+        <item>help</item>
+        <item>head</item>
+        <item>heart</item>
+        <item>dispersed</item>
+        <item>yes</item>
+        <item>no</item>
+        <item>none</item>
+        <item>maybe</item>
+        <item>offload</item>
+        <item>angry</item>
+        <item>happy</item>
+        <item>sad</item>
+        <item>annoyed</item>
+        <item>depressed</item>
+        <item>low</item>
+        <item>up</item>
+        <item>down</item>
+        <item>greedy</item>
+        <item>content</item>
+        <item>unhappy</item>
+        <item>nervous</item>
+        <item>anxious</item>
+        <item>unpleasant</item>
+        <item>hateful</item>
+        <item>mean</item>
+        <item>joyful</item>
+        <item>excited</item>
+        <item>empty</item>
+        <item>calm</item>
+        <item>discontented</item>
+        <item>agitated</item>
+        <item>nothing</item>
+        <item>irritated</item>
+        <item>tense</item>
+        <item>blissful</item>
+        <item>shoulders</item>
+        <item>neck</item>
+        <item>face</item>
+        <item>mouth</item>
+        <item>head</item>
+        <item>forehead</item>
+        <item>belly</item>
+        <item>legs</item>
+        <item>feet</item>
+        <item>hands</item>
+        <item>chest</item>
+        <item>arms</item>
+        <item>back</item>
+        <item>planning</item>
+        <item>problem solving</item>
+        <item>regret</item>
+        <item>hope</item>
+        <item>fix it</item>
+        <item>obsessive</item>
+        <item>wanting</item>
+        <item>spaced out</item>
+        <item>doing</item>
+        <item>unwholesome</item>
+        <item>wholesome</item>
+        <item>pleasant</item>
+        <item>vacant</item>
+
+        </string-array>
+
+    <string name="title_activity_activities">ActivitiesActivity</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
