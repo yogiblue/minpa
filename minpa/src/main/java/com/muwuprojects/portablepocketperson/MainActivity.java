@@ -7,6 +7,7 @@ import java.util.Random;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.speech.tts.TextToSpeech;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -45,6 +46,10 @@ public class MainActivity extends Activity {
 	public static final int STATE_MIND_OFFLOAD = 3;
 	int state=STATE_MIND_START;
 
+	private boolean textToSpeechEnabled=false;
+	private boolean textToSpeechSupported=false;
+	private TextToSpeech tts=null;
+
 	private DatabaseManager db = new DatabaseManager(this);
 
 	@Override
@@ -52,9 +57,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		setTitle("minpa");
-		
-		
-		
+
+		InitializeSpeechEngine();
+
 		myText = (AutoCompleteTextView) findViewById(R.id.userText);
 		theConversation = (TextView) findViewById(R.id.textView1);
 		long lastVisitLong = db.getLastDate();
@@ -140,6 +145,42 @@ public class MainActivity extends Activity {
 		
 		
 		
+	}
+
+	@Override
+	protected void onPause(){
+		if (tts!=null)
+		{
+			tts.stop();
+			tts.shutdown();
+			textToSpeechEnabled=false;
+			tts=null;
+		}
+		super.onPause();
+	}
+
+	void InitializeSpeechEngine(){
+		if(tts!=null)
+			return;
+
+		tts = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
+			@Override
+			public void onInit(int status) {
+				if(status==TextToSpeech.SUCCESS){
+					int result = tts.setLanguage(Locale.getDefault());
+					if(result == TextToSpeech.LANG_MISSING_DATA || result==TextToSpeech.LANG_NOT_SUPPORTED)
+					{
+						// not supported
+						textToSpeechSupported=false;
+					}
+					else
+					{
+						textToSpeechSupported=true;
+					}
+				}
+			}
+		});
+
 	}
 
 	protected void submitText() {
@@ -242,6 +283,13 @@ public class MainActivity extends Activity {
 
 	private void publishPhrase(String phrase) {
 		String newText;
+
+		if(tts!=null && textToSpeechEnabled==true)
+		{
+			// replace any <br/> that might have crept in
+			String speakText = phrase.replaceAll("\\<.*?\\> ?","  ");
+			tts.speak(speakText, TextToSpeech.QUEUE_FLUSH,null);
+		}
 		
 		if(prePhrase=="")
 			newText = "<b>" + phrase + "</b>";
@@ -315,6 +363,23 @@ public class MainActivity extends Activity {
 			publishPhrase("I am ready to listen, tell me all about it.");
 			state = STATE_MIND_OFFLOAD;
 			return true;			
+		}
+		else if(cmd.contentEquals("speak"))
+		{
+			if(textToSpeechEnabled==false)
+			{
+				InitializeSpeechEngine();
+				textToSpeechEnabled=true;
+				if(textToSpeechSupported==true)
+					publishPhrase("Speech enabled");
+				else
+					publishPhrase("Speech not supported");
+			}
+			else
+			{
+				textToSpeechEnabled=false;
+				publishPhrase("Speech disabled");
+			}
 		}
 		else if(cmd.contentEquals("") && emptyOK == false)
 		{
@@ -399,7 +464,7 @@ public class MainActivity extends Activity {
 			//this.finish();
 			//return true;
 		case R.id.about:
-			publishPhrase("Version 1.02. All rights reserved, 2016. I made this app to help with " +
+			publishPhrase("Version 1.03. All rights reserved, 2016. I made this app to help with " +
 					"regular mindfulness practice. I hope you find it useful. " +
 					"Hit next " +
 					"to carry on or type help (h) for help...");
