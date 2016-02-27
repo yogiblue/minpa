@@ -463,9 +463,10 @@ public class MainActivity extends Activity {
 		}
 
 		int totalPhrases = defaultConversation.getNumPhrases();
-		speechKickerTick=60*timerTime/totalPhrases; // that's 5 minutes seconds
+		speechKickerTick=60*timerTime/totalPhrases; // divide them evenly for now
 
 		publishPhrase("Starting timer ...");
+		//publishPhrase("Starting timer ... " + Integer.toString(totalPhrases) + " split into " + Integer.toString(speechKickerTick));
 		textToSpeechEnabled=true;
 		startTimer(timerTime);
 		// work out how many phrase we've got

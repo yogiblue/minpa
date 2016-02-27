@@ -301,7 +301,7 @@ class ZenConversation extends Conversation{
 		myPhrase.setHelp("Be still, empty the mind.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Notice the mind drifting off. Keep on sitting");
+		myPhrase = new Phrase("Notice the mind drifting off. Keep on sitting.");
 		myPhrase.setHelp("Bring the mind back to the breath.");
 		allPhrases.add(myPhrase);
 
@@ -309,17 +309,30 @@ class ZenConversation extends Conversation{
 		myPhrase.setHelp("Keep sitting. Be still.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Keep sitting.");
-		myPhrase.setHelp("Be still, empty the mind. Rest on the breath.");
+		myPhrase = new Phrase("Be still, empty the mind. Rest on the breath.");
+		myPhrase.setHelp("Keep sitting.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Sit as long as you can");
-		myPhrase.setHelp("Keep sitting. Be still.");
-		allPhrases.add(myPhrase);
+		if(mode==MainActivity.MODE_TEXT) {
+			myPhrase = new Phrase("Sit as long as you can.");
+			myPhrase.setHelp("Keep sitting. Be still.");
+			allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("When you are ready, hit next ...");
-		myPhrase.setHelp("Take any stillness into the next moments of your day.");
-		allPhrases.add(myPhrase);
+			myPhrase = new Phrase("When you are ready, hit next ...");
+			myPhrase.setHelp("Take any stillness into the next moments of your day.");
+			allPhrases.add(myPhrase);
+		}
+		else if(mode==MainActivity.MODE_SPEECH)
+		{
+			myPhrase = new Phrase("Maintain awareness of the breath.");
+			myPhrase.setHelp("Keep sitting. Be still.");
+			allPhrases.add(myPhrase);
+
+			myPhrase = new Phrase("Find stillness.");
+			myPhrase.setHelp("Take any stillness into the next moments of your day.");
+			allPhrases.add(myPhrase);
+		}
+
 
 		nextConversation = new CoolDownConversation(MainActivity.MODE_TEXT);
 
@@ -603,91 +616,92 @@ class AnaPanaConversation extends Conversation{
 					"cover the complete experience of mindfulness of breathing meditation.");
 			allPhrases.add(myPhrase);
 		}
-		else if(mode==MainActivity.MODE_TEXT) {
-			myPhrase = new Phrase("Let's work through mindfulness of breathing (anapanasati).");
+		else if(mode==MainActivity.MODE_SPEECH) {
+			myPhrase = new Phrase("Let's work through mindfulness of breathing (anapanasati). This meditation will last 20 minutes.");
 			myPhrase.setHelp("Anapanasati means mindfulness of the breath. Take a moment to relax.");
 			allPhrases.add(myPhrase);
 
 		}
 
-			myPhrase = new Phrase("While inhaling and exhaling, know if you are breathing long");
-		myPhrase.setHelp("Do not try to control the breathing, just observe what is going on - long or short");
+		myPhrase = new Phrase("While inhaling and exhaling, know if you are breathing long.");
+		myPhrase.setHelp("Do not try to control the breathing, just observe what is going on - long or short.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Know if you are breathing short");
-		myPhrase.setHelp("Some people like to count the breaths to help stabilise the mind");
+		myPhrase = new Phrase("Know if you are breathing short.");
+		myPhrase.setHelp("Some people like to count the breaths to help stabilise the mind.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Experience the whole body while breathing");
+		myPhrase = new Phrase("Experience the whole body while breathing.");
 		myPhrase.setHelp("Imagine the breath going into the whole body. You can just do it, or you " +
 				"can progressively imagine the breath going into different parts of the body until you " +
 				"have covered it all.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Relax the whole body while breathing");
+		myPhrase = new Phrase("Relax the whole body while breathing.");
 		myPhrase.setHelp("Once you have the breath going into the whole body, relax into it. Imagining the " +
 				"breath massaging the body can be useful.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("While inhaling and exhaling, experience pleasure");
+		myPhrase = new Phrase("While inhaling and exhaling, experience pleasure.");
 		myPhrase.setHelp("Breathing and relaxing will lead to sensations of pleasure. Pay attention to pleasure and " +
 				"soak in it.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Experience bliss");
+		myPhrase = new Phrase("Experience bliss.");
 		myPhrase.setHelp("Focusing on pleasure will induce a state of bliss. Bliss is a sweet, delicious experience.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Experience mental activities");
+		myPhrase = new Phrase("Experience mental activities.");
 		myPhrase.setHelp("Now, you might be experiencing bliss and you might become aware of the mind " +
 				"trying to get in on the act - analysing, commentating. See this happening.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Relax mental activities");
+		myPhrase = new Phrase("Relax mental activities.");
 		myPhrase.setHelp("Now you are aware of mental activities, you can relax them as you breathe and let go into a deeper, quieter place.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("While inhaling and exhaling, experience the mind");
+		myPhrase = new Phrase("While inhaling and exhaling, experience the mind.");
 		myPhrase.setHelp("The mind is more than just your thoughts. Once you stop thinking, you will " +
 				"become aware of the wider expanse of the mind - you might experience the mind in the heart " +
 				"or body.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Gladden the mind");
+		myPhrase = new Phrase("Gladden the mind.");
 		myPhrase.setHelp("Raise a faint smile on the lips and then smile with your heart. You will experience a " +
 				"welling up of gladness.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Steady the mind in samadhi");
+		myPhrase = new Phrase("Steady the mind in samadhi.");
 		myPhrase.setHelp("Keep a glad mind and it will still itself completely. This is samadhi. It is a state of " +
 				"calm tranquility that does not move to grasp experience.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Release the mind");
+		myPhrase = new Phrase("Release the mind.");
 		myPhrase.setHelp("Drop any pretense of being there. Let go, let go, let go.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("While inhaling and exhaling, recognise impermanence");
+		myPhrase = new Phrase("While inhaling and exhaling, recognise impermanence.");
 		myPhrase.setHelp("The present moment is a flux of millions of things changing all at once. When the mind " +
-				"is released you will experience this flux first hand.");
+				"is released you will experience this flux first hand. Notice the arising and falling of all things in the mind.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Recognise fading of desire");
+		myPhrase = new Phrase("Recognise fading of desire.");
 		myPhrase.setHelp("There is no desire to leave this place. The mind wants for nothing.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Recognise cessation");
-		myPhrase.setHelp("There is no attempt by the mind to leave this experience. We see the ending of all arisen phenomena and we are not drawn to it.");
+		myPhrase = new Phrase("Recognise cessation.");
+		myPhrase.setHelp("We see the ending of all arisen phenomena and we are not drawn to it. We are still. There is no attempt by the mind to leave this experience.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Recognise complete freedom");
+		myPhrase = new Phrase("Recognise complete freedom.");
 		myPhrase.setHelp("There is a great relief at being in this place, however long it lasts. The self drops away and we feel great freedom.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Take some time to bring yourself back into the room");
-		myPhrase.setHelp("");
-		allPhrases.add(myPhrase);
-
+		if(mode==MainActivity.MODE_TEXT) {
+			myPhrase = new Phrase("Take some time to bring yourself back into the room");
+			myPhrase.setHelp("");
+			allPhrases.add(myPhrase);
+		}
 		nextConversation = new CoolDownConversation(MainActivity.MODE_TEXT);
 
 		max_questions = allPhrases.size();
