@@ -141,22 +141,21 @@ public class MainActivity extends Activity {
 			
 		});
 		
-		myText.setOnKeyListener(new OnKeyListener (){
+		myText.setOnKeyListener(new OnKeyListener() {
 
 			@Override
 			public boolean onKey(View arg0, int keyCode, KeyEvent event) {
 				// TODO Auto-generated method stub
-				if((event.getAction() == KeyEvent.ACTION_DOWN) && 
-						(keyCode == KeyEvent.KEYCODE_ENTER))
-				{
+				if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+						(keyCode == KeyEvent.KEYCODE_ENTER)) {
 					//submitText();
 					//Toast.makeText(getApplicationContext(), "hih", Toast.LENGTH_SHORT);
-					
+
 					return true;
 				}
-				return false; 
+				return false;
 			}
-			
+
 		});
 		
 		
@@ -501,9 +500,17 @@ public class MainActivity extends Activity {
 
 
 				if(speechKickerCount==0) {
+					// time to say the current phrase out loud
 					speechKickerCount = speechKickerTick;
 					Phrase thePhrase = defaultConversation.getWholePhrase();
 					publishPhrase(thePhrase.getPhrase());
+				}
+				else if(speechKickerCount==1)
+				{
+					// bit of a fudge
+					// move to the next bit of conversation just before we say it out loud
+					// this allows help phrases to be in sync
+					// and allows the first phrase to be spoken at the beginning
 					defaultConversation.moveOn();
 					if (defaultConversation.isFinished() == true) {
 						if (defaultConversation.getNextConversation() != null) {
