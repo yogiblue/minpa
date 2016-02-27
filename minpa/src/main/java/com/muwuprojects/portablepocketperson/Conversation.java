@@ -103,7 +103,7 @@ public class Conversation {
 	protected boolean emptyAllowed=true;
 	Conversation nextConversation=null;
 	
-	public Conversation(){
+	public Conversation(int mode){
 		finished = false;
 	}
 	
@@ -119,6 +119,11 @@ public class Conversation {
 			finished = true;
 		}
 		return allPhrases.get(state-1).getPhrase();
+	}
+
+	public int getNumPhrases()
+	{
+		return max_questions;
 	}
 
 	public boolean isFinished() {
@@ -178,8 +183,8 @@ public class Conversation {
 
 class HappyConversation extends Conversation{
 
-	public HappyConversation(){
-		super();
+	public HappyConversation(int mode){
+		super(mode);
 		state=0;
 		emptyAllowed=false;
 		Phrase myPhrase;
@@ -208,7 +213,7 @@ class HappyConversation extends Conversation{
 				myPhrase.setHelp("You have recognised happiness in yourself.");
 				allPhrases.add(myPhrase);
 				emptyAllowed = true;
-				nextConversation = new CheckInConversation();
+				nextConversation = new CheckInConversation(MainActivity.MODE_TEXT);
 				max_questions = allPhrases.size();
 				
 			}
@@ -220,7 +225,7 @@ class HappyConversation extends Conversation{
 				allPhrases.add(myPhrase);
 				myPhrase.addResponse("yes");
 				myPhrase.addResponse("no");
-				nextConversation = new CheckInConversation();
+				nextConversation = new CheckInConversation(MainActivity.MODE_TEXT);
 				max_questions = allPhrases.size();				
 			}
 			else if (cmd.contentEquals("maybe"))
@@ -231,7 +236,7 @@ class HappyConversation extends Conversation{
 				myPhrase.setHelp("Keep resting in the middle. Hit next to carry on...");
 				allPhrases.add(myPhrase);
 				emptyAllowed = true;
-				nextConversation = new CheckInConversation();
+				nextConversation = new CheckInConversation(MainActivity.MODE_TEXT);
 				max_questions = allPhrases.size();
 			}
 		}			
@@ -269,15 +274,24 @@ class HappyConversation extends Conversation{
 
 class ZenConversation extends Conversation{
 
-	public ZenConversation(){
-		super();
+	public ZenConversation(int mode){
+		super(mode);
 		state=0;
 		emptyAllowed=true;
 		Phrase myPhrase;
 
-		myPhrase = new Phrase("In Zen, we just sit. <br /><br />Remember, type help (h) at any time for extra instructions.");
-		myPhrase.setHelp("Find a comfortable upright posture and sit still.");
-		allPhrases.add(myPhrase);
+		if(mode==MainActivity.MODE_TEXT) {
+			myPhrase = new Phrase("In Zen, we just sit. <br /><br />Remember, type help (h) at any time for extra instructions.");
+			myPhrase.setHelp("Find a comfortable upright posture and sit still.");
+			allPhrases.add(myPhrase);
+		}
+		else if(mode==MainActivity.MODE_SPEECH)
+		{
+			myPhrase = new Phrase("In Zen, we just sit. This meditation will last 10 minutes.");
+			myPhrase.setHelp("Find a comfortable upright posture and sit still.");
+			allPhrases.add(myPhrase);
+		}
+
 
 		myPhrase = new Phrase("Place your attention on the rising and falling of the belly.");
 		myPhrase.setHelp("Notice it rising and falling.");
@@ -307,7 +321,7 @@ class ZenConversation extends Conversation{
 		myPhrase.setHelp("Take any stillness into the next moments of your day.");
 		allPhrases.add(myPhrase);
 
-		nextConversation = new CoolDownConversation();
+		nextConversation = new CoolDownConversation(MainActivity.MODE_TEXT);
 
 		max_questions = allPhrases.size();
 	}
@@ -316,8 +330,8 @@ class ZenConversation extends Conversation{
 
 class CoolDownConversation extends Conversation{
 
-	public CoolDownConversation(){
-		super();
+	public CoolDownConversation(int mode){
+		super(mode);
 		state=0;
 		emptyAllowed=true;
 		Phrase myPhrase;
@@ -366,7 +380,7 @@ class CoolDownConversation extends Conversation{
 		myPhrase.setHelp("No self, complete freedom");
 		allPhrases.add(myPhrase);
 
-		nextConversation = new HowWasItConversation();
+		nextConversation = new HowWasItConversation(MainActivity.MODE_TEXT);
 
 		max_questions = allPhrases.size();
 	}
@@ -375,8 +389,8 @@ class CoolDownConversation extends Conversation{
 
 class HowWasItConversation extends Conversation{
 
-	public HowWasItConversation(){
-		super();
+	public HowWasItConversation(int mode){
+		super(mode);
 		state=0;
 		emptyAllowed=false;
 		Phrase myPhrase;
@@ -389,7 +403,7 @@ class HowWasItConversation extends Conversation{
 		myPhrase.setHelp("There is always more to explore in the mind");
 		allPhrases.add(myPhrase);
 		
-		nextConversation = new FillerConversation();
+		nextConversation = new FillerConversation(MainActivity.MODE_TEXT);
 
 		max_questions = allPhrases.size();
 	}
@@ -398,8 +412,8 @@ class HowWasItConversation extends Conversation{
 
 class ListenConversation extends Conversation{
 
-	public ListenConversation(){
-		super();
+	public ListenConversation(int mode){
+		super(mode);
 		state=0;
 		emptyAllowed=true;
 		Phrase myPhrase;
@@ -432,7 +446,7 @@ class ListenConversation extends Conversation{
 		myPhrase.setHelp("Just tap the next button.");
 		allPhrases.add(myPhrase);
 
-		nextConversation = new FillerConversation();
+		nextConversation = new FillerConversation(MainActivity.MODE_TEXT);
 		
 		max_questions = allPhrases.size();
 	}
@@ -441,8 +455,8 @@ class ListenConversation extends Conversation{
 
 class CheckInConversation extends Conversation{
 
-	public CheckInConversation(){
-		super();
+	public CheckInConversation(int mode){
+		super(mode);
 		state=0;
 		emptyAllowed=false;
 		Phrase myPhrase;
@@ -498,8 +512,8 @@ class CheckInConversation extends Conversation{
 
 class FillerConversation extends Conversation{
 	
-	public FillerConversation(){
-		super();
+	public FillerConversation(int mode){
+		super(mode);
 		state=0;
 		Phrase myPhrase;
 
@@ -521,10 +535,29 @@ class FillerConversation extends Conversation{
 	}
 }
 
+class SimpleConversation extends Conversation{
+
+	public SimpleConversation(int mode){
+		super(mode);
+		state=0;
+		Phrase myPhrase;
+
+		myPhrase = new Phrase("Let's sit quietly for 5 minutes");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Relax into the breathing");
+		allPhrases.add(myPhrase);
+
+		nextConversation = new FillerConversation(MainActivity.MODE_TEXT);
+
+		max_questions = allPhrases.size();
+	}
+}
+
 class ThreeMinuteConversation extends Conversation{
 	
-	public ThreeMinuteConversation(){
-		super();
+	public ThreeMinuteConversation(int mode){
+		super(mode);
 		state=0;
 		Phrase myPhrase;
 		
@@ -550,7 +583,7 @@ class ThreeMinuteConversation extends Conversation{
 		myPhrase.setHelp("It's good to notice how things affect your body and mind.");
 		allPhrases.add(myPhrase);
 
-		nextConversation = new FillerConversation();
+		nextConversation = new FillerConversation(MainActivity.MODE_TEXT);
 		
 		max_questions = allPhrases.size();
 	}
@@ -558,16 +591,26 @@ class ThreeMinuteConversation extends Conversation{
 
 class AnaPanaConversation extends Conversation{
 	
-	public AnaPanaConversation(){
-		super();
+	public AnaPanaConversation(int mode){
+		super(mode);
 		state=0;
 		Phrase myPhrase;
-		myPhrase = new Phrase("Let's work through mindfulness of breathing (anapanasati). Remember, type help (h) at any time.<br /><br />Find somewhere quiet and then begin ...");
-		myPhrase.setHelp("Anapanasati means mindfulness of the breath. It is the classic, ancient instructions that " +
-				"cover the complete experience of mindfulness meditation.");
-		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("While inhaling and exhaling, know if you are breathing long");
+		if(mode==MainActivity.MODE_TEXT) {
+
+			myPhrase = new Phrase("Let's work through mindfulness of breathing (anapanasati). Remember, type help (h) at any time.<br /><br />Find somewhere quiet and then begin ...");
+			myPhrase.setHelp("Anapanasati means mindfulness of the breath. It is the classic, ancient instructions that " +
+					"cover the complete experience of mindfulness of breathing meditation.");
+			allPhrases.add(myPhrase);
+		}
+		else if(mode==MainActivity.MODE_TEXT) {
+			myPhrase = new Phrase("Let's work through mindfulness of breathing (anapanasati).");
+			myPhrase.setHelp("Anapanasati means mindfulness of the breath. Take a moment to relax.");
+			allPhrases.add(myPhrase);
+
+		}
+
+			myPhrase = new Phrase("While inhaling and exhaling, know if you are breathing long");
 		myPhrase.setHelp("Do not try to control the breathing, just observe what is going on - long or short");
 		allPhrases.add(myPhrase);
 
@@ -645,7 +688,7 @@ class AnaPanaConversation extends Conversation{
 		myPhrase.setHelp("");
 		allPhrases.add(myPhrase);
 
-		nextConversation = new CoolDownConversation();
+		nextConversation = new CoolDownConversation(MainActivity.MODE_TEXT);
 
 		max_questions = allPhrases.size();
 	}

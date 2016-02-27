@@ -7,6 +7,7 @@ import java.util.Random;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.speech.tts.TextToSpeech;
 import android.text.Editable;
 import android.text.Html;
@@ -34,16 +35,29 @@ public class MainActivity extends Activity {
 	AutoCompleteTextView myText;
 	Button myButton;
 	TextView theConversation;
+	TextView timerText;
 	ScrollView myScroll;
-	Conversation defaultConversation = new HappyConversation();
+	Conversation defaultConversation = new HappyConversation(MODE_TEXT);
 	String prePhrase = "";
 
+	CountDownTimer myCountDown = null;
+	int speechKickerTick=0; //when to say a phrase
+	int speechKickerCount=0; //the counter for when to say a phrase
+
+	// playback modes
+	public static final int MODE_TEXT=0;
+	public static final int MODE_SPEECH=1;
+
 	private int lastRandom=-1;
+	// the number of random conversations to choose from
 	public static final int MAX_RANDOM=4;
+
+	// different modes for the main activity
 	public static final int STATE_MIND_START = 0;
 	public static final int STATE_MIND_WHAT = 1;
 	public static final int STATE_MIND_RESTART = 2;
 	public static final int STATE_MIND_OFFLOAD = 3;
+	public static final int STATE_PLAY_SEQUENCE = 4;
 	int state=STATE_MIND_START;
 
 	private boolean textToSpeechEnabled=false;
@@ -62,6 +76,8 @@ public class MainActivity extends Activity {
 
 		myText = (AutoCompleteTextView) findViewById(R.id.userText);
 		theConversation = (TextView) findViewById(R.id.textView1);
+		timerText = (TextView) findViewById(R.id.timerText);
+		timerText.setVisibility(View.INVISIBLE);
 		long lastVisitLong = db.getLastDate();
 		if(lastVisitLong==0)
 		{
@@ -149,13 +165,21 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onPause(){
-		if (tts!=null)
-		{
-			tts.stop();
-			tts.shutdown();
-			textToSpeechEnabled=false;
-			tts=null;
-		}
+		//if (tts!=null)
+		//{
+	//		tts.stop();
+//			tts.shutdown();
+			//textToSpeechEnabled=false;
+			//tts=null;
+		//}
+
+		//only the user can stop the countdown
+		//if(myCountDown != null)
+		//{
+		//	myCountDown.cancel();
+		//	timerText.setVisibility(View.INVISIBLE);
+		//}
+
 		super.onPause();
 	}
 
@@ -255,6 +279,17 @@ public class MainActivity extends Activity {
 			else
 				publishPhrase("(Gentle nod).");
 		}
+		else if(state==STATE_PLAY_SEQUENCE)
+		{
+			state=STATE_MIND_WHAT;
+			publishPhrase("Stopping play back mode ...");
+			timerText.setVisibility(View.INVISIBLE);
+			myCountDown.cancel();
+			toggleSpeech();
+			Phrase thePhrase = defaultConversation.getWholePhrase();
+			publishPhrase(thePhrase.getPhrase());
+
+		}
 		else
 		{
 			publishPhrase("Hmm, something strange has happened");
@@ -303,8 +338,8 @@ public class MainActivity extends Activity {
 				newText + "<br /><br />");
 		theConversation.append(bigtext);
 		myText.setText("");
-		myScroll.post(new Runnable(){
-			public void run(){
+		myScroll.post(new Runnable() {
+			public void run() {
 				myScroll.fullScroll(View.FOCUS_DOWN);
 			}
 		});
@@ -364,22 +399,26 @@ public class MainActivity extends Activity {
 			state = STATE_MIND_OFFLOAD;
 			return true;			
 		}
+		else if(cmd.startsWith("play"))
+		{
+			// check speech engine
+			InitializeSpeechEngine();
+			if(textToSpeechSupported==false)
+			{
+				publishPhrase("Speech not working for some reason");
+				return true;
+			}
+
+			if(checkPlaySequence(cmd)==false) {
+				publishPhrase("Hmm, I'm not sure which sequence to play. Currently you can choose " +
+						"zen, simple or anapanasati, e.g. play zen or play ana");
+			}
+			return true;
+
+		}
 		else if(cmd.contentEquals("speak"))
 		{
-			if(textToSpeechEnabled==false)
-			{
-				InitializeSpeechEngine();
-				textToSpeechEnabled=true;
-				if(textToSpeechSupported==true)
-					publishPhrase("Speech enabled");
-				else
-					publishPhrase("Speech not supported");
-			}
-			else
-			{
-				textToSpeechEnabled=false;
-				publishPhrase("Speech disabled");
-			}
+			toggleSpeech();
 		}
 		else if(cmd.contentEquals("") && emptyOK == false)
 		{
@@ -390,8 +429,126 @@ public class MainActivity extends Activity {
 		
 	}
 
+	private boolean checkPlaySequence(String cmdIn)
+	{
+		String[] separated = cmdIn.split(" ");
+		int timerTime=5; //minutes
+
+		if(separated.length<2)
+		{
+			return false;
+		}
+		String cmd = separated[0];
+		String choice = separated[1].toLowerCase();
+
+		if(choice.contentEquals("zen"))
+		{
+			//load the zen play back conversation
+			loadZen(MODE_SPEECH);
+			timerTime=10; // that's 10 minutes
+		}
+		else if(choice.contentEquals("ana"))
+		{
+			loadAnaPanaSati(MODE_SPEECH);
+			timerTime=20; // that's 20 minutes
+		}
+		else if(choice.contentEquals("simple"))
+		{
+			loadSimple(MODE_SPEECH);
+			timerTime=5;
+		}
+		else
+		{
+			return false;
+		}
+
+		int totalPhrases = defaultConversation.getNumPhrases();
+		speechKickerTick=60*timerTime/totalPhrases; // that's 5 minutes seconds
+
+		publishPhrase("Starting timer ...");
+		textToSpeechEnabled=true;
+		startTimer(timerTime);
+		// work out how many phrase we've got
+		// then tick the conversation along automatically
+		state = STATE_PLAY_SEQUENCE;
+
+		return true;
+
+	}
+
+	private void startTimer(int timerTime)
+	{
+		if(myCountDown!=null)
+		{
+			myCountDown.cancel();
+			myCountDown = null;
+		}
+
+		speechKickerCount=0; // say something straight away
+
+		myCountDown = new CountDownTimer(timerTime*1000*60, 1000) {
+
+			public void onTick(long millisUntilFinished) {
+				//timerText.setText("Seconds remaining: " + millisUntilFinished / 1000);
+				int secondsLeft = (int)(millisUntilFinished/1000)%60;
+				int minutesLeft = (int)(millisUntilFinished/60000);
+				//timerText.setText(" " + Long.toString(millisUntilFinished / 1000) + " ");
+				if(secondsLeft<10)
+					timerText.setText(" " + Integer.toString(minutesLeft) + ":0" + Integer.toString(secondsLeft) + " ");
+				else
+					timerText.setText(" " + Integer.toString(minutesLeft) + ":" + Integer.toString(secondsLeft) + " ");
+
+
+				if(speechKickerCount==0) {
+					speechKickerCount = speechKickerTick;
+					Phrase thePhrase = defaultConversation.getWholePhrase();
+					publishPhrase(thePhrase.getPhrase());
+					defaultConversation.moveOn();
+					if (defaultConversation.isFinished() == true) {
+						if (defaultConversation.getNextConversation() != null) {
+							defaultConversation = defaultConversation.getNextConversation();
+						} else {
+							defaultConversation = getRandomConversation();
+						}
+					}
+				}
+				speechKickerCount--;
+			}
+
+			public void onFinish() {
+				publishPhrase("Your meditation is complete. Take a few moments to relax before resuming your day");
+				timerText.setVisibility(View.INVISIBLE);
+				state=STATE_MIND_WHAT;
+				toggleSpeech();
+			}
+		};
+
+		timerText.setVisibility(View.VISIBLE);
+		myCountDown.start();
+	}
+
+	private void toggleSpeech()
+	{
+		if(textToSpeechEnabled==false)
+		{
+			InitializeSpeechEngine();
+			if(textToSpeechSupported==true)
+			{
+				publishPhrase("Speech enabled");
+				textToSpeechEnabled=true;
+			}
+			else
+				publishPhrase("Speech not supported");
+		}
+		else
+		{
+			textToSpeechEnabled=false;
+			publishPhrase("Speech disabled");
+		}
+	}
+
 	private Conversation getRandomConversation() {
-		Conversation randomConversation = new ZenConversation();
+		Conversation randomConversation = new ZenConversation(MODE_TEXT);
 		Random rand = new Random();
 		int r = rand.nextInt(MAX_RANDOM);
 
@@ -402,13 +559,13 @@ public class MainActivity extends Activity {
 			r=0;
 
 		if(r==0)
-			randomConversation = new ListenConversation();
+			randomConversation = new ListenConversation(MODE_TEXT);
 		else if(r==1)
-			randomConversation = new ZenConversation();
+			randomConversation = new ZenConversation(MODE_TEXT);
 		else if(r==2)
-			randomConversation = new AnaPanaConversation();
+			randomConversation = new AnaPanaConversation(MODE_TEXT);
 		else if(r==3)
-			randomConversation = new ThreeMinuteConversation();
+			randomConversation = new ThreeMinuteConversation(MODE_TEXT);
 
 		lastRandom = r;
 
@@ -427,34 +584,30 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.simple:
-			publishPhrase("Mindfulness is the simple, effortless knowing of what is going. Hit next " +
+			publishPhrase("Mindfulness is the simple, effortless knowing of what is going on. Hit next " +
 					"to begin an exercise ...");
 			state=STATE_MIND_RESTART;
-			defaultConversation = new ListenConversation();
+			defaultConversation = new ListenConversation(MODE_TEXT);
 			lastRandom=0;
 			return true;
 		case R.id.zen:
 			publishPhrase("Let's try some zazen. Hit next to begin ...");
-			state=STATE_MIND_RESTART;
-			defaultConversation = new ZenConversation();
-			lastRandom=1;
+			loadZen(MODE_TEXT);
 			return true;
 		case R.id.threemin:
 			publishPhrase("Time to move on. Hit next to begin ...");
 			state=STATE_MIND_RESTART;
-			defaultConversation = new ThreeMinuteConversation();
+			defaultConversation = new ThreeMinuteConversation(MODE_TEXT);
 			lastRandom=3;
 			return true;
 		case R.id.check_in:
 			publishPhrase("Time to move on. Hit next to begin ...");
 			state=STATE_MIND_RESTART;
-			defaultConversation = new CheckInConversation();
+			defaultConversation = new CheckInConversation(MODE_TEXT);
 			return true;
 		case R.id.anapana:
 			publishPhrase("Time to move on. Hit next to begin ...");
-			state=STATE_MIND_RESTART;
-			defaultConversation = new AnaPanaConversation();
-			lastRandom=2;
+			loadAnaPanaSati(MODE_TEXT);
 			return true;
 		//case R.id.choose:
 			// when we have extra activities to do 
@@ -475,7 +628,7 @@ public class MainActivity extends Activity {
 			}
 			else
 			{
-				defaultConversation = new AnaPanaConversation();
+				defaultConversation = new AnaPanaConversation(MODE_TEXT);
 			}
 			return true;
 
@@ -483,5 +636,26 @@ public class MainActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	void loadZen(int playBackMode)
+	{
+		state=STATE_MIND_RESTART;
+		defaultConversation = new ZenConversation(playBackMode);
+		lastRandom=1;
+	}
+
+	void loadAnaPanaSati(int playBackMode)
+	{
+		state=STATE_MIND_RESTART;
+		defaultConversation = new AnaPanaConversation(playBackMode);
+		lastRandom=2;
+	}
+
+	void loadSimple(int playBackMode)
+	{
+		state=STATE_MIND_RESTART;
+		defaultConversation = new SimpleConversation(playBackMode);
+		lastRandom=-1;
+
+	}
 
 }
