@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -43,6 +44,7 @@ public class MainActivity extends Activity {
 	CountDownTimer myCountDown = null;
 	int speechKickerTick=0; //when to say a phrase
 	int speechKickerCount=0; //the counter for when to say a phrase
+	int nextTimeAlert=0;
 
 	// playback modes
 	public static final int MODE_TEXT=0;
@@ -71,6 +73,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		setTitle("minpa");
+
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		InitializeSpeechEngine();
 
@@ -270,7 +274,7 @@ public class MainActivity extends Activity {
 			if(r==0)
 				publishPhrase("I see, go on.");
 			else if(r==1)
-				publishPhrase("Uh huh, continue.");
+				publishPhrase("Ah, continue.");
 			else if(r==2)
 				publishPhrase("Yes, I see.");
 			else if(r==3)
@@ -284,6 +288,7 @@ public class MainActivity extends Activity {
 			publishPhrase("Stopping play back mode ...");
 			timerText.setVisibility(View.INVISIBLE);
 			myCountDown.cancel();
+			getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 			toggleSpeech();
 			Phrase thePhrase = defaultConversation.getWholePhrase();
 			publishPhrase(thePhrase.getPhrase());
@@ -449,7 +454,7 @@ public class MainActivity extends Activity {
 		else if(choice.contentEquals("ana"))
 		{
 			loadAnaPanaSati(MODE_SPEECH);
-			timerTime=20; // that's 20 minutes
+			timerTime=15; // that's 15 minutes
 		}
 		else if(choice.contentEquals("simple"))
 		{
@@ -467,6 +472,10 @@ public class MainActivity extends Activity {
 		publishPhrase("Starting timer ...");
 		//publishPhrase("Starting timer ... " + Integer.toString(totalPhrases) + " split into " + Integer.toString(speechKickerTick));
 		textToSpeechEnabled=true;
+		// say the first phrase
+		Phrase thePhrase = defaultConversation.getWholePhrase();
+		publishPhrase(thePhrase.getPhrase());
+
 		startTimer(timerTime);
 		// work out how many phrase we've got
 		// then tick the conversation along automatically
@@ -484,7 +493,8 @@ public class MainActivity extends Activity {
 			myCountDown = null;
 		}
 
-		speechKickerCount=0; // say something straight away
+		speechKickerCount=speechKickerTick; // wait before saying something
+		nextTimeAlert = timerTime*60 - speechKickerTick; // when we expect the next message
 
 		myCountDown = new CountDownTimer(timerTime*1000*60, 1000) {
 
@@ -494,23 +504,26 @@ public class MainActivity extends Activity {
 				int minutesLeft = (int)(millisUntilFinished/60000);
 				//timerText.setText(" " + Long.toString(millisUntilFinished / 1000) + " ");
 				if(secondsLeft<10)
-					timerText.setText(" " + Integer.toString(minutesLeft) + ":0" + Integer.toString(secondsLeft) + " ");
+			    	timerText.setText(" " + Integer.toString(minutesLeft) + ":0" + Integer.toString(secondsLeft));
 				else
-					timerText.setText(" " + Integer.toString(minutesLeft) + ":" + Integer.toString(secondsLeft) + " ");
+					timerText.setText(" " + Integer.toString(minutesLeft) + ":" + Integer.toString(secondsLeft));
 
+				//if(secondsLeft<10)
+				//	timerText.setText(" " + Integer.toString((int)millisUntilFinished/1000) + " " + Integer.toString(speechKickerCount) + " " + Integer.toString(nextTimeAlert) + " ");
+				//else
+				//	timerText.setText(" " + Integer.toString((int)millisUntilFinished/1000) + " " + Integer.toString(speechKickerCount) + " " + Integer.toString(nextTimeAlert) + " ");
+
+				if(nextTimeAlert>(int)millisUntilFinished/1000)
+				{
+					// somehow we missed some time, perhaps the phone went to sleep
+					speechKickerCount=0;
+				}
 
 				if(speechKickerCount==0) {
 					// time to say the current phrase out loud
+
 					speechKickerCount = speechKickerTick;
-					Phrase thePhrase = defaultConversation.getWholePhrase();
-					publishPhrase(thePhrase.getPhrase());
-				}
-				else if(speechKickerCount==1)
-				{
-					// bit of a fudge
-					// move to the next bit of conversation just before we say it out loud
-					// this allows help phrases to be in sync
-					// and allows the first phrase to be spoken at the beginning
+					nextTimeAlert = (int)millisUntilFinished/1000 - speechKickerTick;
 					defaultConversation.moveOn();
 					if (defaultConversation.isFinished() == true) {
 						if (defaultConversation.getNextConversation() != null) {
@@ -518,6 +531,10 @@ public class MainActivity extends Activity {
 						} else {
 							defaultConversation = getRandomConversation();
 						}
+					}
+					else {
+						Phrase thePhrase = defaultConversation.getWholePhrase();
+						publishPhrase(thePhrase.getPhrase());
 					}
 				}
 				speechKickerCount--;
@@ -528,6 +545,7 @@ public class MainActivity extends Activity {
 				timerText.setVisibility(View.INVISIBLE);
 				state=STATE_MIND_WHAT;
 				toggleSpeech();
+				getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 			}
 		};
 

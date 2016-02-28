@@ -287,7 +287,7 @@ class ZenConversation extends Conversation{
 		}
 		else if(mode==MainActivity.MODE_SPEECH)
 		{
-			myPhrase = new Phrase("In Zen, we just sit. This meditation will last 10 minutes.");
+			myPhrase = new Phrase("In Zen, we just sit. This meditation will last 10 minutes. Relax and take a deep breath.");
 			myPhrase.setHelp("Find a comfortable upright posture and sit still.");
 			allPhrases.add(myPhrase);
 		}
@@ -301,7 +301,7 @@ class ZenConversation extends Conversation{
 		myPhrase.setHelp("Be still, empty the mind.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Notice the mind drifting off. Keep on sitting.");
+		myPhrase = new Phrase("Notice the mind drifting off. Maintain awarenesss of the breath.");
 		myPhrase.setHelp("Bring the mind back to the breath.");
 		allPhrases.add(myPhrase);
 
@@ -617,7 +617,8 @@ class AnaPanaConversation extends Conversation{
 			allPhrases.add(myPhrase);
 		}
 		else if(mode==MainActivity.MODE_SPEECH) {
-			myPhrase = new Phrase("Let's work through mindfulness of breathing (anapanasati). This meditation will last 20 minutes.");
+			myPhrase = new Phrase("Let's work through mindfulness of breathing (anapanasati). This meditation will last 15 minutes. Take a deep " +
+					" breath and relax.");
 			myPhrase.setHelp("Anapanasati means mindfulness of the breath. Take a moment to relax.");
 			allPhrases.add(myPhrase);
 
