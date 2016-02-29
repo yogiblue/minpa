@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.Random;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -165,6 +167,7 @@ public class MainActivity extends Activity {
 		
 		
 	}
+
 
 	@Override
 	protected void onPause(){
@@ -402,6 +405,14 @@ public class MainActivity extends Activity {
 			publishPhrase("I am ready to listen, tell me all about it.");
 			state = STATE_MIND_OFFLOAD;
 			return true;			
+		}
+		else if(cmd.contentEquals("about"))
+		{
+			publishPhrase("Thanks for your interest in this app");
+			Intent i = new Intent(getApplicationContext(), AboutActivity.class);
+			startActivity(i);
+
+			return true;
 		}
 		else if(cmd.startsWith("play"))
 		{
@@ -643,19 +654,10 @@ public class MainActivity extends Activity {
 			//this.finish();
 			//return true;
 		case R.id.about:
-			publishPhrase("Version 1.03. All rights reserved, 2016. I made this app to help with " +
-					"regular mindfulness practice. I hope you find it useful. " +
-					"Hit next " +
-					"to carry on or type help (h) for help...");
-			state=STATE_MIND_RESTART;
-			if(defaultConversation.getNextConversation()!=null)
-			{
-				defaultConversation = defaultConversation.getNextConversation();
-			}
-			else
-			{
-				defaultConversation = new AnaPanaConversation(MODE_TEXT);
-			}
+			publishPhrase("Thanks for your interest in this app");
+			Intent i = new Intent(getApplicationContext(), AboutActivity.class);
+			startActivity(i);
+
 			return true;
 
 		}

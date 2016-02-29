@@ -92,10 +92,12 @@
         <item>pass</item>
         <item>zen</item>
         <item>anapanasati</item>
+        <item>about</item>
 
-        </string-array>
+    </string-array>
 
     <string name="title_activity_activities">ActivitiesActivity</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_about">AboutActivity</string>
 
 </resources>
