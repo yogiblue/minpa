@@ -13,6 +13,7 @@ import android.speech.tts.TextToSpeech;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -146,6 +147,30 @@ public class MainActivity extends Activity {
 			}
 			
 		});
+
+		myText.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start,
+										  int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start,
+									  int before, int count) {
+				if (s.length() > 3) {
+					if(s.toString().endsWith("next")){
+						myText.setText(s.subSequence(0,s.length() - 4).toString());
+
+						submitText();
+					}
+				}
+			}
+		});
 		
 		myText.setOnKeyListener(new OnKeyListener() {
 
@@ -214,14 +239,17 @@ public class MainActivity extends Activity {
 		// TODO Auto-generated method stub
 		String newText="";
 		
-		String cmd = myText.getText().toString();
+		String cmd = myText.getText().toString().trim();
 		
 		if(cmd.contentEquals("y"))
 			cmd = "yes";
 		
 		if(cmd.contentEquals("n"))
 			cmd="no";
-		
+
+		if(cmd.contentEquals("okay"))
+			cmd = "OK";
+
 		if(specialCommand(cmd)==true)
 		{
 			return;
