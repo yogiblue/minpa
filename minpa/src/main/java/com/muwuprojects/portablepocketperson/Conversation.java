@@ -573,10 +573,13 @@ class ThreeMinuteConversation extends Conversation{
 		super(mode);
 		state=0;
 		Phrase myPhrase;
-		
-		myPhrase = new Phrase("Let's do a three minute mindfulness exercise.<br /><br />Find somewhere quiet and then begin ...");
-		myPhrase.setHelp("Do this regularly to build up your mindfulness skills");
-		allPhrases.add(myPhrase);
+
+		if(mode==MainActivity.MODE_TEXT) {
+
+			myPhrase = new Phrase("Let's do a three minute mindfulness exercise.<br /><br />Find somewhere quiet and then begin ...");
+			myPhrase.setHelp("Do this regularly to build up your mindfulness skills");
+			allPhrases.add(myPhrase);
+		}
 
 		myPhrase = new Phrase("Take a minute and tune in to the present moment. Breathe in and out slowly. " +
 				"Acknowledge your surroundings. Pay attention to thoughts and feelings.");
@@ -592,9 +595,12 @@ class ThreeMinuteConversation extends Conversation{
 				"and our experience becomes more unified.");
 		allPhrases.add(myPhrase);
 
-		myPhrase = new Phrase("Good, time is up. Notice any changes that may have happened during the last three minutes.");
-		myPhrase.setHelp("It's good to notice how things affect your body and mind.");
-		allPhrases.add(myPhrase);
+		if(mode==MainActivity.MODE_TEXT) {
+
+			myPhrase = new Phrase("Good, time is up. Notice any changes that may have happened during the last three minutes.");
+			myPhrase.setHelp("It's good to notice how things affect your body and mind.");
+			allPhrases.add(myPhrase);
+		}
 
 		nextConversation = new FillerConversation(MainActivity.MODE_TEXT);
 		
@@ -708,4 +714,56 @@ class AnaPanaConversation extends Conversation{
 		max_questions = allPhrases.size();
 	}
 
+}
+
+
+class SevenFactorsConversation extends Conversation{
+
+	public SevenFactorsConversation(int mode){
+		super(mode);
+		state=0;
+		Phrase myPhrase;
+
+		myPhrase = new Phrase("Let's work through the seven factors of awakening. Take a deep breath and relax.");
+		myPhrase.setHelp("The seven factors of awakening are a good way to channel your practice");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Establish mindfulness");
+		myPhrase.setHelp("The first factor. An anchor for the others.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Investigate your experience. What is a thought? What is the mind? Where is the mind?");
+		myPhrase.setHelp("The second factor. Investigation.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Become aware of energy");
+		myPhrase.setHelp("Invesitation leads to energy, a brightening of the mind.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Feel joy arising");
+		myPhrase.setHelp("Energy and investigation lead to joy.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Become aware of tranquility");
+		myPhrase.setHelp("As joy subsides, the mind becomes tranquil");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Relax into samadhi");
+		myPhrase.setHelp("The sixth factor. The mind becomes still and calm.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Know equinimity ");
+		myPhrase.setHelp("The seventh factor. As samadhi deepens, equinimity (fading of desire and insight into cessation) develops.");
+		allPhrases.add(myPhrase);
+
+		if(mode==MainActivity.MODE_TEXT) {
+			myPhrase = new Phrase("Take some time to bring yourself back into the room");
+			myPhrase.setHelp("Use the seven factors to develop practice.");
+			allPhrases.add(myPhrase);
+		}
+
+		nextConversation = new FillerConversation(MainActivity.MODE_TEXT);
+
+		max_questions = allPhrases.size();
+	}
 }

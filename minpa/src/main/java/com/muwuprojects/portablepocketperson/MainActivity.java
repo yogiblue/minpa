@@ -492,6 +492,16 @@ public class MainActivity extends Activity {
 			loadAnaPanaSati(MODE_SPEECH);
 			timerTime=15; // that's 15 minutes
 		}
+		else if(choice.contentEquals("seven"))
+		{
+			loadSevenFactors(MODE_SPEECH);
+			timerTime=15; // that's 15 minutes
+		}
+		else if(choice.contentEquals("three"))
+		{
+			loadThreeMinutes(MODE_SPEECH);
+			timerTime=3; // that's 15 minutes
+		}
 		else if(choice.contentEquals("simple"))
 		{
 			loadSimple(MODE_SPEECH);
@@ -703,6 +713,19 @@ public class MainActivity extends Activity {
 		lastRandom=2;
 	}
 
+	void loadSevenFactors(int playBackMode)
+	{
+		state=STATE_MIND_RESTART;
+		defaultConversation = new SevenFactorsConversation(playBackMode);
+		lastRandom=-1;
+	}
+
+	void loadThreeMinutes(int playBackMode)
+	{
+		state=STATE_MIND_RESTART;
+		defaultConversation = new ThreeMinuteConversation(playBackMode);
+		lastRandom=3;
+	}
 	void loadSimple(int playBackMode)
 	{
 		state=STATE_MIND_RESTART;
