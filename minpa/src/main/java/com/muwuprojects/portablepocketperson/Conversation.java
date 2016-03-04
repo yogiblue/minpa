@@ -246,11 +246,11 @@ class HappyConversation extends Conversation{
 			if(cmd.contentEquals("yes"))
 			{
 				Phrase myPhrase;
-				myPhrase = new Phrase("You can offload at any time by typing the 'offload' command. " +
+				myPhrase = new Phrase("You can vent your frustrations at any time by typing the 'vent' command. " +
 						"Keep writing sentences until you've got it all out and then enter an empty " +
 						"sentence to finish.");
 				myPhrase.setHelp("Just let it all out");
-				myPhrase.addResponse("offload");
+				myPhrase.addResponse("vent");
 				allPhrases.add(myPhrase);
 				nextConversation = null;
 				max_questions = allPhrases.size();
@@ -759,6 +759,78 @@ class SevenFactorsConversation extends Conversation{
 		if(mode==MainActivity.MODE_TEXT) {
 			myPhrase = new Phrase("Take some time to bring yourself back into the room");
 			myPhrase.setHelp("Use the seven factors to develop practice.");
+			allPhrases.add(myPhrase);
+		}
+
+		nextConversation = new FillerConversation(MainActivity.MODE_TEXT);
+
+		max_questions = allPhrases.size();
+	}
+}
+
+
+class BodyScanConversation extends Conversation{
+
+	public BodyScanConversation(int mode){
+		super(mode);
+		state=0;
+		Phrase myPhrase;
+
+		myPhrase = new Phrase("Let's do a body scan meditation. Begin by taking a deep breath in and allowing yourself a moment to relax.");
+		myPhrase.setHelp("Mindfulness of the body is an important way of checking in with yourself. It is also very relaxing and a good " +
+				"way to find peace and ease");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Breathe into the feet and let them release.");
+		myPhrase.setHelp("Imagine the breath going down through the body and into the feet. As you breathe out, let the feet relax");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Imagine the breath going down into the legs and then let them relax.");
+		myPhrase.setHelp("Sometimes it can help to tense up your muscles and then let them release.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Now, imagine the breath going into the hips and groin. Allow this area to open as you breathe out.");
+		myPhrase.setHelp("Imagine the base of your spine relaxing and opening.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Feel the breath going into the belly. Relax the belly as you breathe out.");
+		myPhrase.setHelp("The area behind the belly is also known as the hara. It is important to relax this area to release hidden tension.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Breathe into the solar plexus and let it go as you breathe out.");
+		myPhrase.setHelp("Allow the body to breathe itself");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Imagine the breath going into the heart and, as you breathe out, let the muscles in the chest area relax.");
+		myPhrase.setHelp("Imagine the breath gladdening the heart.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Feel the breath going into the shoulders and neck. Allow the muscles to let go.");
+		myPhrase.setHelp("We hold a lot of tension here. Relax the muscles and allow yourself to relax");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Imagine the breath going down the arms and into the hands. Let the arms and hands release.");
+		myPhrase.setHelp("Feel the fingers loosen and relax.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Now, notice any tension in your face and let it go. You may find tension in the jaw, lips, " +
+				"eyes or forehead.");
+		myPhrase.setHelp("We have a lot of muscles in our face. Let them all relax.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Next, imagine the breath going into the head: the whole head. Breathe in and as you breathe out " +
+				"let the whole head relax.");
+		myPhrase.setHelp("Feel the breath filling the head with space and relaxation.");
+		allPhrases.add(myPhrase);
+
+		myPhrase = new Phrase("Spend a few minutes enjoying head to toe relaxation. Feel the body, mind and breath unite as one.");
+		myPhrase.setHelp("This is a pleasant way to spend your time relaxing.");
+		allPhrases.add(myPhrase);
+
+
+		if(mode==MainActivity.MODE_TEXT) {
+			myPhrase = new Phrase("The meditation is complete. Bring yourself back into the room slowly and with care.");
+			myPhrase.setHelp("Use the body scan as often as you can.");
 			allPhrases.add(myPhrase);
 		}
 

@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
 
 	private int lastRandom=-1;
 	// the number of random conversations to choose from
-	public static final int MAX_RANDOM=4;
+	public static final int MAX_RANDOM=5;
 
 	// different modes for the main activity
 	public static final int STATE_MIND_START = 0;
@@ -425,7 +425,7 @@ public class MainActivity extends Activity {
 			publishPhrase(helpPhrase);
 			return true;			
 		}
-		else if(cmd.contentEquals("offload"))
+		else if(cmd.contentEquals("vent"))
 		{
 			publishPhrase("I am ready to listen, tell me all about it.");
 			state = STATE_MIND_OFFLOAD;
@@ -495,6 +495,11 @@ public class MainActivity extends Activity {
 		else if(choice.contentEquals("seven"))
 		{
 			loadSevenFactors(MODE_SPEECH);
+			timerTime=20; // that's 15 minutes
+		}
+		else if(choice.contentEquals("body"))
+		{
+			loadBodyScan(MODE_SPEECH);
 			timerTime=15; // that's 15 minutes
 		}
 		else if(choice.contentEquals("three"))
@@ -638,6 +643,8 @@ public class MainActivity extends Activity {
 			randomConversation = new AnaPanaConversation(MODE_TEXT);
 		else if(r==3)
 			randomConversation = new ThreeMinuteConversation(MODE_TEXT);
+		else if(r==4)
+			randomConversation = new BodyScanConversation(MODE_TEXT);
 
 		lastRandom = r;
 
@@ -681,7 +688,11 @@ public class MainActivity extends Activity {
 			publishPhrase("Time to move on. Hit next to begin ...");
 			loadAnaPanaSati(MODE_TEXT);
 			return true;
-		//case R.id.choose:
+		case R.id.body_scan:
+			publishPhrase("Let's do something relaxing. Hit next to begin ...");
+			loadBodyScan(MODE_TEXT);
+			return true;
+				//case R.id.choose:
 			// when we have extra activities to do 
         	//Intent i = new Intent(getApplicationContext(), ActivitiesActivity.class);
         	//startActivity(i);
@@ -718,6 +729,13 @@ public class MainActivity extends Activity {
 		state=STATE_MIND_RESTART;
 		defaultConversation = new SevenFactorsConversation(playBackMode);
 		lastRandom=-1;
+	}
+
+	void loadBodyScan(int playBackMode)
+	{
+		state=STATE_MIND_RESTART;
+		defaultConversation = new BodyScanConversation(playBackMode);
+		lastRandom=4;
 	}
 
 	void loadThreeMinutes(int playBackMode)

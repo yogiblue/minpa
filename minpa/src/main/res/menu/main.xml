@@ -16,7 +16,7 @@
         android:id="@+id/body_scan"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:visible="false"
+        android:visible="true"
         android:title="@string/body_scan"/>
     
             <item
